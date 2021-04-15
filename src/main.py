@@ -60,11 +60,11 @@ class WhatsApp:
         person_chat = self.driver.find_element_by_xpath(person_chat_xpath)
         person_chat.click()
     
-    def send_message(self, first_name: str) -> None:
+    def send_message(self, first_name: str, sender_name: str) -> None:
         self.wait.until(presence_of_all_elements_located((By.XPATH, XPATH.chat_field_xpath)))
         chat_field = self.driver.find_element_by_xpath(XPATH.chat_field_xpath)
         chat_field.clear()
-        self.message = f'Hi {first_name},\n{self.message}'
+        self.message = f'Hi {first_name},\n{self.message},\nThanks, {sender_name}'
         message_array: List[str] = self.message.split('\n')
         for msg in message_array:
             chat_field.send_keys(msg)
@@ -72,7 +72,7 @@ class WhatsApp:
         chat_field.send_keys(Keys.ENTER)
         sleep(0.5)
     
-    def run(self, filename: str) -> None:
+    def run(self, filename: str, sender_name: str) -> None:
         recipients: List[Recipient] = self.recipient_data(filename=filename)
         print(recipients)
         failures_file = open('./src/failures.csv', 'a')
@@ -86,9 +86,10 @@ class WhatsApp:
                 print(f'Failed for {recipient.full_name}')
                 print(str(e))
                 continue
-            self.send_message(recipient.first_name)
+            self.send_message(first_name=recipient.first_name, sender_name=sender_name)
         failures_file.close()
 
 
 if __name__ == '__main__':
-    WhatsApp().run('./src/recipients.csv')
+    sender_name: str = input('Enter the name of the sender')
+    WhatsApp().run(filename='./src/recipients.csv', sender_name=sender_name)
