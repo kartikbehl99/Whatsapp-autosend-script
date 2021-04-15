@@ -27,6 +27,9 @@ class WhatsApp:
         with open('./src/message.txt', 'r') as msg_file:
             self.message = msg_file.read()
 
+    def parse_contact_no(contact_no: str) -> str:
+        pass
+
     @staticmethod
     def recipient_data(filename: str) -> List[Recipient]:
         '''
@@ -37,9 +40,9 @@ class WhatsApp:
             recipient_csv = csv.DictReader(recipient_data_file)
             for recipient in recipient_csv:
                 recipient = Recipient(
-                    first_name=recipient['First Name'],
-                    last_name=recipient['Last Name'],
-                    full_name=' '.join([recipient['First Name'], recipient['Last Name']]).strip(),
+                    first_name=recipient['First Name'].strip(),
+                    last_name=recipient['Last Name'].strip(),
+                    full_name=' '.join([recipient['First Name'], recipient['Last Name']]).replace(' ', ''),
                     contact_no=recipient['Mobile']
                 )
                 data.append(recipient)
